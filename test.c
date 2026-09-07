@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "allocator.h"
 
 int main(){
 
@@ -29,8 +31,35 @@ int main(){
 
     printf("\n------\n\n");
 
-    int address = sbrk(0);
-    printf("Current program break (end of heap): %p\n", (void*)address);
+    //int address = sbrk(0);
+    //printf("Current program break (end of heap): %p\n", (void*)address);
+
+    printf("\n------\n\n");
+
+    bool bolean = true;
+
+    printf("Size of boolean variable: %zu bytes\n", sizeof(bolean));
+
+    printf("\n------\n\n");
+
+    int *dynamic_array = (int *)allocate_memory(5 * sizeof(int));
+    if (dynamic_array == NULL) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+
+    for (int i = 0; i < 5; i++) {
+        dynamic_array[i] = i + 1;
+    }
+
+    printf("Values in dynamically allocated array: ");
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", dynamic_array[i]);
+    }
+    printf("\naddress of dynamically allocated array: %p\n", (void*)dynamic_array);
+
+    free_memory(dynamic_array);
+    
 
     return 0;
 }

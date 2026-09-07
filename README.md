@@ -83,6 +83,17 @@ Questa è la versione più comoda, ed è quella usata quasi sempre nella pratica
 
 NOTA: Entrambi modificano la regione dell'heap
 
+
+##### Il valore di ritorno di sbrk in caso di errore
+
+Come abbiamo detto, sbrk normalmente restituisce un void * che punta all'inizio della memoria appena resa disponibile. Ma se la chiamata fallisce (es. non c'è più memoria virtuale disponibile, o si supera un limite imposto dal sistema), sbrk non restituisce NULL come magari ti aspetteresti — restituisce invece:
+
+c
+(void *) -1
+
+Questo è un valore sentinella speciale, definito come tutti i bit a 1 interpretati come un puntatore. Su un sistema a 64 bit, per esempio, corrisponde all'indirizzo 0xFFFFFFFFFFFFFFFF.
+
+
 #### mmap()
 
 brk/sbrk operano esclusivamente spostando il confine dell'heap classico — quella singola regione contigua che si trova subito dopo i dati statici del programma.
