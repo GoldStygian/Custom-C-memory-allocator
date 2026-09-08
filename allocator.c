@@ -15,6 +15,13 @@ utente chiama malloc()
 
 */
 
+/* TO DO:
+    - shrink dei blocchi 
+    - thread safety
+    - magic number
+    - mmap per blocchi grandi 
+*/
+
 struct header{
 
     size_t prgbreak;
@@ -102,24 +109,28 @@ struct block *request_memory_from_os(size_t size) {
 }
 
 void free_memory(void *ptr) {
-    debug_print_blocks();
+    //debug_print_blocks();
     if (ptr == NULL) return;
 
     //struct block *blk = (struct block *)ptr -1; // ottieni il puntatore al blocco a partire dal puntatore ai dati
 
     struct block *current = header.first_block;
-    if (current == NULL) return; // nessun blocco da liberare
-    while (current != ptr && current != NULL) {
+    while (current != NULL) {
+        
+        if ((void *)(current + 1) == ptr) {
+            if (!current->in_use) {
+                return; // evita una doppia liberazione
+            }
+        
+            current->in_use = false; // segna il blocco come libero
+            return; // esci dalla funzione dopo aver liberato il blocco
+        }
+
         current = current->next; // se non lo trovo vado avanti nella lista
-    
+
     }
 
-    if (current == ptr){
-        current->in_use = false; // segna il blocco come libero
-        current->length = 0; // resetta la lunghezza del blocco
-    }
-
-    debug_print_blocks();
+    //debug_print_blocks();
 
 }
 
@@ -151,5 +162,5 @@ void debug_print_blocks(void) {
         printf("(lista vuota)\n");
     }
 
-    printf("===============================\n");
+    printf("===============================\n\n");
 }

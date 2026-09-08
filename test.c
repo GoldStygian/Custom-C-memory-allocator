@@ -47,7 +47,7 @@ int main(){
         printf("Memory allocation failed\n");
         return 1;
     }
-
+    debug_print_blocks();
     for (int i = 0; i < 5; i++) {
         dynamic_array[i] = i + 1;
     }
@@ -58,8 +58,26 @@ int main(){
     }
     printf("\naddress of dynamically allocated array: %p\n", (void*)dynamic_array);
 
-    free_memory(dynamic_array);
+    //free_memory(dynamic_array);
+    debug_print_blocks();
     
+    int *dynamic_array2 = (int *)allocate_memory(3 * sizeof(int));
+    if (dynamic_array2 == NULL) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+    debug_print_blocks();
+    for (int i = 0; i < 3; i++) {
+        dynamic_array2[i] = (i + 1) * 10;
+    }
+    printf("Values in second dynamically allocated array: ");
+    for (int i = 0; i < 3; i++) {
+        printf("%d ", dynamic_array2[i]);
+    }
+    printf("\naddress of second dynamically allocated array: %p\n", (void*)dynamic_array2);
+
+    free_memory(dynamic_array2);
+    debug_print_blocks();
 
     return 0;
 }
